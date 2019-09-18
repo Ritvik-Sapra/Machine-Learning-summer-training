@@ -1,0 +1,129 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Jul 12 10:08:27 2019
+
+@author: nitik
+"""
+
+'''
+We first try to visualise data. We try to understand in terms of the three states
+about their the profit and expenditure spent by them.
+We then use Machine Lerning model for prediction and finally find out the accuracy of model.
+'''
+
+#%%
+''' We first load the data set from the PC.'''
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sb
+dataset=pd.read_csv(r"C:\Users\nitik\Desktop\Internal_ML_Project_Final\50_Startups.csv")
+dataset=dataset.fillna(0)
+dataset
+#%%
+''' We now make a pie chart of R&D Spend, Administration, Marketing Spend and Profit of 
+the three states. '''
+data=dataset.groupby(['State']).sum ()
+print("The table for sum() grouped by 'State' is given below:")
+print(data)
+
+A=data.iloc[:,-1]
+B=data.iloc[:,0]
+C=data.iloc[:,1]
+D=data.iloc[:,2]
+
+l=['California','Florida','New York']
+c=['r','b','g']
+
+plt.pie(B,labels=l,colors=c,autopct='%1.01f%%',explode=(0,0,0.1),startangle=90)
+plt.xlabel('x axis---->')
+plt.ylabel('y axis----->')
+plt.title('R&D Spend')
+plt.legend()
+plt.show()
+
+plt.pie(C,labels=l,colors=c,autopct='%1.01f%%',explode=(0,0,0.1),startangle=90)
+plt.xlabel('x axis---->')
+plt.ylabel('y axis----->')
+plt.title('Administration')
+plt.legend()
+plt.show()
+
+plt.pie(D,labels=l,colors=c,autopct='%1.01f%%',explode=(0,0.1,0),startangle=90)
+plt.xlabel('x axis---->')
+plt.ylabel('y axis----->')
+plt.title('Marketing')
+plt.legend()
+plt.show()
+
+plt.pie(A,labels=l,colors=c,autopct='%1.01f%%',explode=(0,0,0.1),startangle=90)
+plt.xlabel('x axis---->')
+plt.ylabel('y axis----->')
+plt.title('Profit')
+plt.legend()
+plt.show()
+#%%
+''' We have to predict Profit. Thus, we plot between other columns and Profit
+to understand their relation. '''
+#between R&D and Profit
+plt.plot(B,A)
+plt.title('R&D Spend vs. Profit')
+plt.xlabel('R&D Spend')
+plt.ylabel('Profit')
+plt.show()
+
+#between Administration and Profit
+plt.plot(C,A)
+plt.title('Administration vs. Profit')
+plt.xlabel('Administration')
+plt.ylabel('Profit')
+plt.show()
+
+#between Marketing and Profit
+plt.plot(D,A)
+plt.title('Marketting vs. Profit')
+plt.xlabel('Marketing')
+plt.ylabel('Profit')
+plt.show()
+#%%
+''' We now do the pair plot to understand properly relation between all the data. '''
+sb.pairplot(dataset)
+#%%
+''' We now know that profit is dependent on R&D Spend and Marketing. To understand it better we 
+see the correlation table '''
+print(dataset.corr())
+#%%
+''' Since now we know our 'x' set and 'y' set, we assign the data sets to the variables. '''
+x=dataset.iloc[:,[0,2]].values
+y=dataset.iloc[:,-1].values
+print(x)
+print(y)
+#%%
+''' Now we have the data sets ready. We now plot a relation between the the two sets. '''
+#plot
+plt.plot(x,y)
+#%%
+#reg plot between R&D Spend and Profit
+sb.regplot(dataset['R&D Spend'],y)
+#%%
+#reg plot between Marketing Spend and Profit
+sb.regplot(dataset['Marketing Spend'],y)
+#%%
+''' We have properly visualised the data and found out the reltion. Now we implement
+the ML model, i.e., Linear Regresion (we found it most effective amongst other models) '''
+
+#We train, test and split the data.
+from sklearn.model_selection import train_test_split
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.25,random_state=21)
+x_train, y_train
+#%%
+from sklearn.linear_model import LinearRegression
+lr=LinearRegression()
+lr.fit(x_train,y_train)
+pred1=lr.predict(x_test)
+pred1
+#%%
+from sklearn.metrics import r2_score
+acc1=r2_score(y_test,pred1)
+acc1
+#%%
