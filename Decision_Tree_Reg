@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 # Importing the dataset
-dataset = pd.read_csv('50_Startups.csv')
+dataset = pd.read_csv('50_Startups.csv')      """Copy the full file path"""
 X = dataset.iloc[:, 1:2].values
 y = dataset.iloc[:, 2].values
 
